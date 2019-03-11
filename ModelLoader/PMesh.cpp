@@ -41,3 +41,8 @@ void PMesh::addVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
 {
     m_vertices.push_back(glm::vec4(x, y, z, w));
 }
+
+void PMesh::addIndex(GLuint i)
+{
+    m_indices.push_back(i);
+}

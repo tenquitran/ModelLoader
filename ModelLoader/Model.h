@@ -26,6 +26,11 @@ namespace ModelLoaderApp
         // Exceptions: Exception.
         void addVertex(int meshId, GLfloat x, GLfloat y, GLfloat z, GLfloat w = 1.0f);
 
+        // Add vertex index to the mesh.
+        // Parameters: meshId - unique ID of the mesh;
+        //             i  - vertex index.
+        void addIndex(int meshId, GLuint i);
+
         virtual ~Model();
 
     private:

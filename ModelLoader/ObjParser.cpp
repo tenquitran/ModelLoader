@@ -147,9 +147,12 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Model&
 
     const char delimiter = '/';
 
-    std::vector<GLuint> indices;
+    // TODO: add texture coordinates and normal indices data to the model
+#if 1
+    //std::vector<GLuint> indices;
     std::vector<GLuint> texCoords;
     std::vector<GLuint> normalIndices;
+#endif
 
     std::string item;
 
@@ -157,12 +160,15 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Model&
     {
         std::istringstream ss(tokens[i]);
 
+        int k = 1;
+
         while (std::getline(ss, item, delimiter))
         {
-            switch (i)
+            switch (k++)
             {
             case 1:
-                indices.push_back(atoi(item.c_str()));
+                model.addIndex(m_currentMeshId, atoi(item.c_str()));
+                //indices.push_back(atoi(item.c_str()));
                 break;
             case 2:
                 if (!item.empty())
@@ -181,6 +187,4 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Model&
             }
         }
     }
-
-    int tmp = 1;
 }

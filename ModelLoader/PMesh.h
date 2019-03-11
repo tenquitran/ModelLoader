@@ -20,6 +20,9 @@ namespace ModelLoaderApp
         // Add vertex coordinates.
         void addVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat w = 1.0f);
 
+        // Add vertex index.
+        void addIndex(GLuint i);
+
         virtual ~PMesh();
 
     private:
@@ -27,5 +30,7 @@ namespace ModelLoaderApp
         CAtlString m_name;
 
         std::vector<glm::vec4> m_vertices;
+
+        std::vector<GLuint> m_indices;
     };
 }
