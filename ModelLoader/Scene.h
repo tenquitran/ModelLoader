@@ -60,5 +60,7 @@ namespace ModelLoaderApp
         //////////////////////////////////////////////////////////////////////////
 
         ObjParser m_objParser;
+
+        PModel m_model;
     };
 }

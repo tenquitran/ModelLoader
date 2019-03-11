@@ -47,10 +47,21 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
         glm::vec3 cameraPosition = { 0.0f, 0.0f, -5.0f };
 
         // Initial scale factor for the camera.
-        const GLfloat CameraScale = 1.0f;
+        //const GLfloat CameraScale = 1.0f;
+        const GLfloat CameraScale = 10.0f;
+        //const GLfloat CameraScale = -0.91f;    // for the picture model
 
         // Create an OpenGL camera.
         std::shared_ptr<Camera> spCamera = std::make_shared<Camera>(cameraPosition, CameraScale, FOV, FrustumNear, FrustumFar);
+
+        // For the picture model.
+#if 1
+        //spCamera->translate(glm::vec3(0.0f, 0.0f, -30.0f));
+
+        //spCamera->translate(glm::vec3(0.0f, 0.2f, 0.0f));
+        //spCamera->scale(-0.91f);
+        //spCamera->rotate(glm::vec3(0.0f, -65.0f, 0.0f));
+#endif
 
         // Create main window (sets up an OpenGL context internally).
 

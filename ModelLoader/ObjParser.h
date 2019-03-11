@@ -14,14 +14,14 @@ namespace ModelLoaderApp
         // Parameters: filePath - full or partial path to the OBJ file;
         //             model - the resulting model.
         // Returns: true on success, false otherwise.
-        bool parse(const CAtlString& filePath, Model& model);
+        bool parse(const CAtlString& filePath, PModel& model);
 
     private:
-        void parseLine(const std::string& line, Model& model);
+        void parseLine(const std::string& line, PModel& model);
 
-        void parseVertexCoords(const std::vector<std::string>& tokens, Model& model);
+        void parseVertexCoords(const std::vector<std::string>& tokens, PModel& model);
 
-        void parseFaceElements(const std::vector<std::string>& tokens, Model& model);
+        void parseFaceElements(const std::vector<std::string>& tokens, PModel& model);
 
     private:
         // true when we need to add new mesh to the model.

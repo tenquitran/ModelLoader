@@ -39,10 +39,10 @@
     <ClInclude Include="ObjParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
+    <ClInclude Include="PMesh.h">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="PMesh.h">
+    <ClInclude Include="PModel.h">
       <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,10 +59,10 @@
     <ClCompile Include="ObjParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
+    <ClCompile Include="PMesh.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="PMesh.cpp">
+    <ClCompile Include="PModel.cpp">
       <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>

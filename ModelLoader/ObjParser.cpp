@@ -16,7 +16,7 @@ ObjParser::~ObjParser()
 {
 }
 
-bool ObjParser::parse(const CAtlString& filePath, Model& model)
+bool ObjParser::parse(const CAtlString& filePath, PModel& model)
 {
     std::ifstream file(filePath.GetString());
 
@@ -41,7 +41,7 @@ bool ObjParser::parse(const CAtlString& filePath, Model& model)
     return true;
 }
 
-void ObjParser::parseLine(const std::string& line, Model& model)
+void ObjParser::parseLine(const std::string& line, PModel& model)
 {
     if (line.empty())
         {return;}
@@ -100,7 +100,7 @@ void ObjParser::parseLine(const std::string& line, Model& model)
 #endif
 }
 
-void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, Model& model)
+void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, PModel& model)
 {
     if (tokens.size() < 4)
     {
@@ -127,7 +127,7 @@ void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, Model&
     }
 }
 
-void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Model& model)
+void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, PModel& model)
 {
     if (!m_newMesh)
     {
@@ -149,7 +149,7 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Model&
 
     // TODO: add texture coordinates and normal indices data to the model
 #if 1
-    //std::vector<GLuint> indices;
+    std::vector<GLuint> indices;
     std::vector<GLuint> texCoords;
     std::vector<GLuint> normalIndices;
 #endif
@@ -167,8 +167,8 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Model&
             switch (k++)
             {
             case 1:
-                model.addIndex(m_currentMeshId, atoi(item.c_str()));
-                //indices.push_back(atoi(item.c_str()));
+                //model.addIndex(m_currentMeshId, atoi(item.c_str()));
+                indices.push_back(atoi(item.c_str()));
                 break;
             case 2:
                 if (!item.empty())
@@ -186,5 +186,28 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Model&
                 break;
             }
         }
+    }
+
+    // Add indices to the mode.
+    switch (indices.size())
+    {
+    case 3:    // triangles: add as is
+        for (const auto& ind : indices)
+        {
+            model.addIndex(m_currentMeshId, ind);
+        }
+        break;
+    case 4:    // quadrilaterals: the order is 0, 1, 2 for the first triangle and 0, 2, 3 for the second one
+        for (const auto& ind : indices)
+        {
+            model.addIndex(m_currentMeshId, ind);
+        }
+        model.addIndex(m_currentMeshId, indices[0]);
+        model.addIndex(m_currentMeshId, indices[2]);
+        model.addIndex(m_currentMeshId, indices[3]);
+        break;
+    default:
+        // TODO: how to handle this?
+        ATLASSERT(FALSE); break;
     }
 }

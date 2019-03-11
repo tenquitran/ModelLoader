@@ -82,7 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PMesh.h" />
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="PModel.h" />
     <ClInclude Include="ObjParser.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
@@ -92,7 +92,7 @@
   <ItemGroup>
     <ClCompile Include="entryPoint.cpp" />
     <ClCompile Include="PMesh.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="PModel.cpp" />
     <ClCompile Include="ObjParser.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="stdafx.cpp">

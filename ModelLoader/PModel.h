@@ -3,14 +3,15 @@
 
 namespace ModelLoaderApp
 {
-    class Model
+    // 3D model. The prefix "P" is used for consistency with PMesh.
+    class PModel
     {
     public:
 #if 0
         // Parameters: name - name of the model.
         explicit Model(const CAtlString& name);
 #else
-        Model();
+        PModel();
 #endif
 
         void setName(const CAtlString& name);
@@ -20,18 +21,24 @@ namespace ModelLoaderApp
         // Returns: unique ID of the mesh.
         int addMesh();
 
+        // Get mesh.
+        // Parameters: meshId - unique ID of the mesh.
+        // Throws: Exception.
+        PMesh& getMesh(int meshId);
+
         // Add vertex coordinates to the mesh.
         // Parameters: meshId - unique ID of the mesh;
         //             x, y, z, w - vertex coordinates.
-        // Exceptions: Exception.
+        // Throws: Exception.
         void addVertex(int meshId, GLfloat x, GLfloat y, GLfloat z, GLfloat w = 1.0f);
 
         // Add vertex index to the mesh.
         // Parameters: meshId - unique ID of the mesh;
         //             i  - vertex index.
+        // Throws: Exception.
         void addIndex(int meshId, GLuint i);
 
-        virtual ~Model();
+        virtual ~PModel();
 
     private:
         // Name of the model.

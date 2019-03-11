@@ -25,7 +25,9 @@ namespace ModelLoaderApp
 
         virtual ~PMesh();
 
-    private:
+        // TODO: make private
+    public:
+    //private:
         // Name of the mesh.
         CAtlString m_name;
 

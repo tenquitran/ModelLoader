@@ -39,7 +39,12 @@ CAtlString PMesh::getName() const
 
 void PMesh::addVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
 {
+#if 1
+    // TODO: temp. Scale down the mesh.
+    m_vertices.push_back(glm::vec4(x / 30.0f, y / 30.0f, z / 30.0f, w));
+#else
     m_vertices.push_back(glm::vec4(x, y, z, w));
+#endif
 }
 
 void PMesh::addIndex(GLuint i)

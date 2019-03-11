@@ -30,6 +30,6 @@ using namespace ATL;
 #include "../../CommonLibOgl/CommonLibOgl/CommonLibOgl.h"
 
 #include "PMesh.h"
-#include "Model.h"
+#include "PModel.h"
 
 #include "ObjParser.h"

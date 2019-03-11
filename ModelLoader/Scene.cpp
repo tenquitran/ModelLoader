@@ -53,17 +53,6 @@ bool Scene::initialize()
 
     updateUniforms();
 
-    // TODO: temp
-
-    Model model;
-
-    //"E:\natProgs\graphics2\ModelLoader\ModelLoader\data\picture_2\picture_2.obj"
-    if (!m_objParser.parse(L"E:\\natProgs\\graphics2\\ModelLoader\\ModelLoader\\data\\picture_2\\picture_2.obj", model))
-    //if (!m_objParser.parse(L"data\\picture_2\\picture_2.obj", model))
-    {
-        return false;
-    }
-
     return true;
 }
 
@@ -72,16 +61,30 @@ bool Scene::initializeContents()
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
 
+    // TODO: temp
+
+    //PModel model;
+
+    if (!m_objParser.parse(L"E:\\natProgs\\graphics2\\ModelLoader\\ModelLoader\\data\\picture_2\\picture_2.obj", m_model))
+    //if (!m_objParser.parse(L"data\\picture_2\\picture_2.obj", model))
+    {
+        return false;
+    }
+
     // Set up the vertex buffer.
 
+#if 0
     std::vector<GLfloat> vertices = {
         -0.90f, -0.90f, 0.0f,
          0.85f, -0.90f, 0.0f,
         -0.90f,  0.85f, 0.0f };
+#endif
+
+    PMesh mesh = m_model.getMesh(0);
 
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.m_vertices.size() * sizeof(mesh.m_vertices[0]), &mesh.m_vertices[0], GL_STATIC_DRAW);
 
     // Fill in the vertex position attribute.
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -89,13 +92,15 @@ bool Scene::initializeContents()
 
     // Set up the index buffer.
 
+#if 0
     std::vector<GLuint> indices = {0, 1, 2};
+#endif
 
-    m_indexCount = indices.size();
+    m_indexCount = mesh.m_indices.size();
 
     glGenBuffers(1, &m_index);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), &indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.m_indices.size() * sizeof(mesh.m_indices[0]), &mesh.m_indices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);

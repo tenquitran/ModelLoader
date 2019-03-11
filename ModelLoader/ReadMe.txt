@@ -7,3 +7,10 @@ Uses the following libraries:
 	SOIL (http://www.lonesock.net/soil.html)
 
 Created: March 11, 2019
+
+////////////////////////////////////////
+
+TODO:
+1) the indices are wrong
+2) move the VAO and buffers to the PMesh class and make the vertices, indices, etc. private
+3) remove scaling of the model from PMesh::addVertex()
