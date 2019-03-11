@@ -198,9 +198,9 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, PModel
         }
         break;
     case 4:    // quadrilaterals: the order is 0, 1, 2 for the first triangle and 0, 2, 3 for the second one
-        for (const auto& ind : indices)
+        for (size_t m = {}; m < 3; ++m)
         {
-            model.addIndex(m_currentMeshId, ind);
+            model.addIndex(m_currentMeshId, indices[m]);
         }
         model.addIndex(m_currentMeshId, indices[0]);
         model.addIndex(m_currentMeshId, indices[2]);
