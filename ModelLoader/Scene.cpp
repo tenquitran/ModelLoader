@@ -80,11 +80,12 @@ bool Scene::initializeContents()
         -0.90f,  0.85f, 0.0f };
 #endif
 
-    PMesh mesh = m_model.getMesh(0);
+    PMesh& mesh = m_model.getMesh(0);
 
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, mesh.m_vertices.size() * sizeof(mesh.m_vertices[0]), &mesh.m_vertices[0], GL_STATIC_DRAW);
+    //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), &vertices[0], GL_STATIC_DRAW);
 
     // Fill in the vertex position attribute.
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -94,12 +95,15 @@ bool Scene::initializeContents()
 
 #if 0
     std::vector<GLuint> indices = {0, 1, 2};
-#endif
 
+    m_indexCount = indices.size();
+#else
     m_indexCount = mesh.m_indices.size();
+#endif
 
     glGenBuffers(1, &m_index);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), &indices[0], GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.m_indices.size() * sizeof(mesh.m_indices[0]), &mesh.m_indices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -114,7 +118,7 @@ void Scene::updateUniforms() const
 {
     // Our shaders don't use the uniforms.
     // The code is left as a reference for more complex projects.
-#if 0
+#if 1
     ATLASSERT(m_programId);
 
     glUseProgram(m_programId);
@@ -125,6 +129,7 @@ void Scene::updateUniforms() const
 
     glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(m_spCamera->getModelViewProjectionMatrix()));
 
+#if 0
     glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_spCamera->getProjectionMatrix()));
 
     glm::mat4 modelView = m_spCamera->getModelViewMatrix();
@@ -136,6 +141,7 @@ void Scene::updateUniforms() const
     glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normal));
 
     glUniformMatrix4fv(3, 1, GL_FALSE, glm::value_ptr(modelView));
+#endif
 
     glUseProgram(0);
 #endif
@@ -178,6 +184,8 @@ void Scene::render() const
 {
     ATLASSERT(m_programId);
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     updateUniforms();
 
     glUseProgram(m_programId);
@@ -185,6 +193,7 @@ void Scene::render() const
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
 
+    //glDrawElements(GL_TRIANGLE_FAN, m_indexCount, GL_UNSIGNED_INT, 0);
     glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

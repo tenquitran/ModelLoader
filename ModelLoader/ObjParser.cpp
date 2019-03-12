@@ -191,20 +191,27 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, PModel
     // Add indices to the mode.
     switch (indices.size())
     {
-    case 3:    // triangles: add as is
+    case 3:    // triangle: add as is
+        for (const auto& ind : indices)
+        {
+            model.addIndex(m_currentMeshId, ind - 1);
+        }
+        break;
+    case 4:    // quadrilateral: the order is 0, 1, 2 for the first triangle and 0, 2, 3 for the second one
+#if 0
         for (const auto& ind : indices)
         {
             model.addIndex(m_currentMeshId, ind);
         }
-        break;
-    case 4:    // quadrilaterals: the order is 0, 1, 2 for the first triangle and 0, 2, 3 for the second one
+#else
         for (size_t m = {}; m < 3; ++m)
         {
-            model.addIndex(m_currentMeshId, indices[m]);
+            model.addIndex(m_currentMeshId, indices[m] - 1);
         }
-        model.addIndex(m_currentMeshId, indices[0]);
-        model.addIndex(m_currentMeshId, indices[2]);
-        model.addIndex(m_currentMeshId, indices[3]);
+        model.addIndex(m_currentMeshId, indices[0] - 1);
+        model.addIndex(m_currentMeshId, indices[2] - 1);
+        model.addIndex(m_currentMeshId, indices[3] - 1);
+#endif
         break;
     default:
         // TODO: how to handle this?
