@@ -81,6 +81,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MeshData.h" />
     <ClInclude Include="PMesh.h" />
     <ClInclude Include="PModel.h" />
     <ClInclude Include="ObjParser.h" />

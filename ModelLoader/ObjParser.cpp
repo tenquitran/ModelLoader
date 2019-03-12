@@ -31,17 +31,35 @@ bool ObjParser::parse(const CAtlString& filePath, PModel& model)
         ATLASSERT(FALSE); return false;
     }
 
+    Meshes meshes;
+
     while (getline(file, line))
     {
-        parseLine(line, model);
+        parseLine(line, meshes);
     }
+
+    if (!model.initialize(meshes))
+    {
+        std::wcerr << L"Model initialization failed\n";
+        return false;
+    }
+
+#if 0
+    PMesh& mesh = model.getMesh(0);
+
+    if (!mesh.initialize())
+    {
+        std::wcerr << L"Mesh initialization failed\n";
+        return false;
+    }
+#endif
 
     file.close();
 
     return true;
 }
 
-void ObjParser::parseLine(const std::string& line, PModel& model)
+void ObjParser::parseLine(const std::string& line, Meshes& meshes)
 {
     if (line.empty())
         {return;}
@@ -59,7 +77,7 @@ void ObjParser::parseLine(const std::string& line, PModel& model)
     }
     else if ("v" == contents[0])    // vertex coordinates
     {
-        parseVertexCoords(contents, model);
+        parseVertexCoords(contents, meshes);
     }
     else if ("vt" == contents[0])    // texture coordinates
     {
@@ -83,8 +101,7 @@ void ObjParser::parseLine(const std::string& line, PModel& model)
     }
     else if ("f" == contents[0])    // polygonal face element (face index/texture coordinate/normal index)
     {
-        // TODO: uncomment
-        parseFaceElements(contents, model);
+        parseFaceElements(contents, meshes);
     }
     else if ("mtllib" == contents[0])
     {
@@ -101,7 +118,7 @@ void ObjParser::parseLine(const std::string& line, PModel& model)
 #endif
 }
 
-void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, PModel& model)
+void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, Meshes& meshes)
 {
     if (tokens.size() < 4)
     {
@@ -110,25 +127,41 @@ void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, PModel
 
     if (m_newMesh)
     {
-        m_currentMeshId = model.addMesh();
+        //meshes.insert(std::pair<MeshId, ModelData>(++m_currentMeshId, ModelData()));
+        meshes.insert(std::make_pair(++m_currentMeshId, MeshData()));
+
+        //m_currentMeshId = model.addMesh();
+
+#if 0
+        MeshId meshId = m_nextMeshId++;
+
+        m_meshes.insert(std::make_pair(meshId, PMesh()));
+#endif
+
         m_newMesh = false;
     }
 
+    glm::vec4 vertex = {
+        atof(tokens[1].c_str()),
+        atof(tokens[2].c_str()),
+        atof(tokens[3].c_str()),
+        1.0f };
+
+#if 0
     GLfloat x = atof(tokens[1].c_str());
     GLfloat y = atof(tokens[2].c_str());
     GLfloat z = atof(tokens[3].c_str());
+#endif
 
-    if (tokens.size() <= 4)
+    if (tokens.size() > 4)
     {
-        model.addVertex(m_currentMeshId, x, y, z);
+        vertex.w = atof(tokens[4].c_str());
     }
-    else
-    {
-        model.addVertex(m_currentMeshId, x, y, z, atof(tokens[4].c_str()));
-    }
+
+    meshes[m_currentMeshId].m_vertices.push_back(vertex);
 }
 
-void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, PModel& model)
+void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Meshes& meshes)
 {
     if (!m_newMesh)
     {
@@ -168,7 +201,7 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, PModel
             switch (k++)
             {
             case 1:
-                //model.addIndex(m_currentMeshId, atoi(item.c_str()));
+                //meshes[m_currentMeshId].m_indices.push_back(atoi(item.c_str()));
                 indices.push_back(atoi(item.c_str()));
                 break;
             case 2:
@@ -195,7 +228,9 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, PModel
     case 3:    // triangle: add as is
         for (const auto& ind : indices)
         {
-            model.addIndex(m_currentMeshId, ind - 1);
+            //model.addIndex(m_currentMeshId, ind - 1);
+
+            meshes[m_currentMeshId].m_indices.push_back(ind - 1);
         }
         break;
     case 4:    // quadrilateral: the order is 0, 1, 2 for the first triangle and 0, 2, 3 for the second one
@@ -207,11 +242,12 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, PModel
 #else
         for (size_t m = {}; m < 3; ++m)
         {
-            model.addIndex(m_currentMeshId, indices[m] - 1);
+            //model.addIndex(m_currentMeshId, indices[m] - 1);
+            meshes[m_currentMeshId].m_indices.push_back(indices[m] - 1);
         }
-        model.addIndex(m_currentMeshId, indices[0] - 1);
-        model.addIndex(m_currentMeshId, indices[2] - 1);
-        model.addIndex(m_currentMeshId, indices[3] - 1);
+        meshes[m_currentMeshId].m_indices.push_back(indices[0] - 1);
+        meshes[m_currentMeshId].m_indices.push_back(indices[2] - 1);
+        meshes[m_currentMeshId].m_indices.push_back(indices[3] - 1);
 #endif
         break;
     default:

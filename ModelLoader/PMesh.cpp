@@ -55,6 +55,7 @@ CAtlString PMesh::getName() const
     return m_name;
 }
 
+#if 0
 void PMesh::addVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
 {
 #if 0
@@ -72,8 +73,9 @@ void PMesh::addIndex(GLuint i)
     // TODO: currently, we cannot process negative indices
     ATLASSERT(i >= 0);
 }
+#endif
 
-bool PMesh::initialize()
+bool PMesh::initialize(const MeshData& data)
 {
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
@@ -82,7 +84,7 @@ bool PMesh::initialize()
 
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(m_vertices[0]), &m_vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, data.m_vertices.size() * sizeof(data.m_vertices[0]), &data.m_vertices[0], GL_STATIC_DRAW);
 
     // Fill in the vertex position attribute.
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -90,11 +92,11 @@ bool PMesh::initialize()
 
     // Set up the index buffer.
 
-    m_indexCount = m_indices.size();
+    m_indexCount = data.m_indices.size();
 
     glGenBuffers(1, &m_index);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(m_indices[0]), &m_indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.m_indices.size() * sizeof(data.m_indices[0]), &data.m_indices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);

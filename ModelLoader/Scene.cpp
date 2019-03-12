@@ -49,6 +49,7 @@ bool Scene::initializeContents()
         return false;
     }
 
+#if 0
     PMesh& mesh = m_model.getMesh(0);
 
     if (!mesh.initialize())
@@ -56,6 +57,7 @@ bool Scene::initializeContents()
         std::wcerr << L"Mesh initialization failed\n";
         return false;
     }
+#endif
 
     updateUniforms();
 
@@ -138,7 +140,8 @@ void Scene::render() const
 
     glUseProgram(m_programId);
 
-    m_model.getMeshConst(0).render();
+    m_model.render();
+    //m_model.getMeshConst(0).render();
 
     glUseProgram(0);
 }

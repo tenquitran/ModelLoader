@@ -45,6 +45,9 @@
     <ClInclude Include="PModel.h">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="MeshData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

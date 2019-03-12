@@ -37,69 +37,79 @@ CAtlString PModel::getName() const
     return m_name;
 }
 
+#if 0
 int PModel::addMesh()
 {
-    int meshId = m_nextMeshId++;
+    MeshId meshId = m_nextMeshId++;
 
     m_meshes.insert(std::make_pair(meshId, PMesh()));
 
     return meshId;
 }
-
-PMesh& PModel::getMesh(int meshId)
-{
-    std::map<int, PMesh>::iterator mesh = m_meshes.find(meshId);
-
-    if (m_meshes.cend() == mesh)
-    {
-        ATLASSERT(FALSE); throw EXCEPTION_FMT(L"Model %s: no mesh with ID = %d", (LPCTSTR)getName(), meshId);
-    }
-
-    return mesh->second;
-}
-
-const PMesh& PModel::getMeshConst(int meshId) const
-{
-    std::map<int, PMesh>::const_iterator mesh = m_meshes.find(meshId);
-
-    if (m_meshes.cend() == mesh)
-    {
-        ATLASSERT(FALSE); throw EXCEPTION_FMT(L"Model %s: no mesh with ID = %d", (LPCTSTR)getName(), meshId);
-    }
-
-    return mesh->second;
-}
-
-void PModel::addVertex(int meshId, GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
-{
-#if 1
-    PMesh& mesh = getMesh(meshId);
-#else
-    std::map<int, PMesh>::iterator mesh = m_meshes.find(meshId);
-
-    if (m_meshes.cend() == mesh)
-    {
-        ATLASSERT(FALSE); throw EXCEPTION_FMT(L"Model %s: no mesh with ID = %d", (LPCTSTR)getName(), meshId);
-    }
 #endif
+
+PMesh& PModel::getMesh(MeshId meshId)
+{
+    std::map<MeshId, PMesh>::iterator mesh = m_meshes.find(meshId);
+
+    if (m_meshes.cend() == mesh)
+    {
+        ATLASSERT(FALSE); throw EXCEPTION_FMT(L"Model %s: no mesh with ID = %d", (LPCTSTR)getName(), meshId);
+    }
+
+    return mesh->second;
+}
+
+const PMesh& PModel::getMeshConst(MeshId meshId) const
+{
+    std::map<MeshId, PMesh>::const_iterator mesh = m_meshes.find(meshId);
+
+    if (m_meshes.cend() == mesh)
+    {
+        ATLASSERT(FALSE); throw EXCEPTION_FMT(L"Model %s: no mesh with ID = %d", (LPCTSTR)getName(), meshId);
+    }
+
+    return mesh->second;
+}
+
+#if 0
+void PModel::addVertex(MeshId meshId, GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
+{
+    PMesh& mesh = getMesh(meshId);
 
     mesh.addVertex(x, y, z, w);
 }
 
-void PModel::addIndex(int meshId, GLuint i)
+void PModel::addIndex(MeshId meshId, GLuint i)
 {
-#if 1
     PMesh& mesh = getMesh(meshId);
-#else
-    std::map<int, PMesh>::iterator mesh = m_meshes.find(meshId);
-
-    if (m_meshes.cend() == mesh)
-    {
-        ATLASSERT(FALSE); throw EXCEPTION_FMT(L"Model %s: no mesh with ID = %d", (LPCTSTR)getName(), meshId);
-    }
-
-    mesh->second.addIndex(i);
-#endif
 
     mesh.addIndex(i);
+}
+#endif
+
+bool PModel::initialize(const Meshes& meshes)
+{
+    for (const auto& itr : meshes)
+    {
+        MeshId id = itr.first;
+
+        m_meshes.insert(std::make_pair(id, PMesh()));
+
+        if (!m_meshes[id].initialize(itr.second))
+        {
+            std::wcerr << L"Failed to initialize mesh (ID = " << itr.first << '\n';
+            ATLASSERT(FALSE); return false;
+        }
+    }
+
+    return true;
+}
+
+void PModel::render() const
+{
+    for (const auto& itr : m_meshes)
+    {
+        itr.second.render();
+    }
 }

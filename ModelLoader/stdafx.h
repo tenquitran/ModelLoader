@@ -29,6 +29,8 @@ using namespace ATL;
 
 #include "../../CommonLibOgl/CommonLibOgl/CommonLibOgl.h"
 
+#include "MeshData.h"
+
 #include "PMesh.h"
 #include "PModel.h"
 
