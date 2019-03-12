@@ -44,12 +44,11 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 
         OpenGLInfo openGLInfo(OpenGLVersionMajor, OpenGLVersionMinor, FOV, FrustumNear, FrustumFar);
 
-        glm::vec3 cameraPosition = { 0.0f, 0.0f, -5.0f };
+        //glm::vec3 cameraPosition = { 0.0f, 0.0f, -5.0f };    // for the cube
+        glm::vec3 cameraPosition = { 0.0f, 0.0f, -70.0f };    // for the picture model
 
         // Initial scale factor for the camera.
-        //const GLfloat CameraScale = 1.0f;
-        const GLfloat CameraScale = 10.0f;
-        //const GLfloat CameraScale = -0.91f;    // for the picture model
+        const GLfloat CameraScale = 1.0f;
 
         // Create an OpenGL camera.
         std::shared_ptr<Camera> spCamera = std::make_shared<Camera>(cameraPosition, CameraScale, FOV, FrustumNear, FrustumFar);

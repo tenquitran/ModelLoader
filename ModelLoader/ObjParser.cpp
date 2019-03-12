@@ -83,6 +83,7 @@ void ObjParser::parseLine(const std::string& line, PModel& model)
     }
     else if ("f" == contents[0])    // polygonal face element (face index/texture coordinate/normal index)
     {
+        // TODO: uncomment
         parseFaceElements(contents, model);
     }
     else if ("mtllib" == contents[0])

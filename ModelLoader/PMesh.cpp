@@ -39,7 +39,7 @@ CAtlString PMesh::getName() const
 
 void PMesh::addVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
 {
-#if 1
+#if 0
     // TODO: temp. Scale down the mesh.
     m_vertices.push_back(glm::vec4(x / 30.0f, y / 30.0f, z / 30.0f, w));
 #else
@@ -50,4 +50,7 @@ void PMesh::addVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
 void PMesh::addIndex(GLuint i)
 {
     m_indices.push_back(i);
+
+    // TODO: currently, we cannot process negative indices
+    ATLASSERT(i >= 0);
 }
