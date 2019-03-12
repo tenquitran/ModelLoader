@@ -37,17 +37,6 @@ CAtlString PModel::getName() const
     return m_name;
 }
 
-#if 0
-int PModel::addMesh()
-{
-    MeshId meshId = m_nextMeshId++;
-
-    m_meshes.insert(std::make_pair(meshId, PMesh()));
-
-    return meshId;
-}
-#endif
-
 PMesh& PModel::getMesh(MeshId meshId)
 {
     std::map<MeshId, PMesh>::iterator mesh = m_meshes.find(meshId);
@@ -71,22 +60,6 @@ const PMesh& PModel::getMeshConst(MeshId meshId) const
 
     return mesh->second;
 }
-
-#if 0
-void PModel::addVertex(MeshId meshId, GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
-{
-    PMesh& mesh = getMesh(meshId);
-
-    mesh.addVertex(x, y, z, w);
-}
-
-void PModel::addIndex(MeshId meshId, GLuint i)
-{
-    PMesh& mesh = getMesh(meshId);
-
-    mesh.addIndex(i);
-}
-#endif
 
 bool PModel::initialize(const Meshes& meshes)
 {

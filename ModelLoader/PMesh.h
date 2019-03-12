@@ -17,14 +17,6 @@ namespace ModelLoaderApp
         void setName(const CAtlString& name);
         CAtlString getName() const;
 
-#if 0
-        // Add vertex coordinates.
-        void addVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat w = 1.0f);
-
-        // Add vertex index.
-        void addIndex(GLuint i);
-#endif
-
         bool initialize(const MeshData& data);
 
         void render() const;
@@ -34,11 +26,6 @@ namespace ModelLoaderApp
     private:
         // Name of the mesh.
         CAtlString m_name;
-
-#if 0
-        std::vector<glm::vec4> m_vertices;
-        std::vector<GLuint> m_indices;
-#endif
 
         GLuint m_vao = {};
         GLuint m_vbo = {};

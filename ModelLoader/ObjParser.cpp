@@ -44,16 +44,6 @@ bool ObjParser::parse(const CAtlString& filePath, PModel& model)
         return false;
     }
 
-#if 0
-    PMesh& mesh = model.getMesh(0);
-
-    if (!mesh.initialize())
-    {
-        std::wcerr << L"Mesh initialization failed\n";
-        return false;
-    }
-#endif
-
     file.close();
 
     return true;
@@ -127,16 +117,7 @@ void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, Meshes
 
     if (m_newMesh)
     {
-        //meshes.insert(std::pair<MeshId, ModelData>(++m_currentMeshId, ModelData()));
         meshes.insert(std::make_pair(++m_currentMeshId, MeshData()));
-
-        //m_currentMeshId = model.addMesh();
-
-#if 0
-        MeshId meshId = m_nextMeshId++;
-
-        m_meshes.insert(std::make_pair(meshId, PMesh()));
-#endif
 
         m_newMesh = false;
     }
@@ -146,12 +127,6 @@ void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, Meshes
         atof(tokens[2].c_str()),
         atof(tokens[3].c_str()),
         1.0f };
-
-#if 0
-    GLfloat x = atof(tokens[1].c_str());
-    GLfloat y = atof(tokens[2].c_str());
-    GLfloat z = atof(tokens[3].c_str());
-#endif
 
     if (tokens.size() > 4)
     {
@@ -181,12 +156,9 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Meshes
 
     const char delimiter = '/';
 
-    // TODO: add texture coordinates and normal indices data to the model
-#if 1
     std::vector<GLuint> indices;
     std::vector<GLuint> texCoords;
     std::vector<GLuint> normalIndices;
-#endif
 
     std::string item;
 
@@ -201,7 +173,6 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Meshes
             switch (k++)
             {
             case 1:
-                //meshes[m_currentMeshId].m_indices.push_back(atoi(item.c_str()));
                 indices.push_back(atoi(item.c_str()));
                 break;
             case 2:
@@ -228,27 +199,18 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Meshes
     case 3:    // triangle: add as is
         for (const auto& ind : indices)
         {
-            //model.addIndex(m_currentMeshId, ind - 1);
-
             meshes[m_currentMeshId].m_indices.push_back(ind - 1);
         }
         break;
     case 4:    // quadrilateral: the order is 0, 1, 2 for the first triangle and 0, 2, 3 for the second one
-#if 0
-        for (const auto& ind : indices)
-        {
-            model.addIndex(m_currentMeshId, ind);
-        }
-#else
         for (size_t m = {}; m < 3; ++m)
         {
-            //model.addIndex(m_currentMeshId, indices[m] - 1);
             meshes[m_currentMeshId].m_indices.push_back(indices[m] - 1);
         }
+
         meshes[m_currentMeshId].m_indices.push_back(indices[0] - 1);
         meshes[m_currentMeshId].m_indices.push_back(indices[2] - 1);
         meshes[m_currentMeshId].m_indices.push_back(indices[3] - 1);
-#endif
         break;
     default:
         // TODO: how to handle this?

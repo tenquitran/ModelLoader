@@ -55,26 +55,6 @@ CAtlString PMesh::getName() const
     return m_name;
 }
 
-#if 0
-void PMesh::addVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
-{
-#if 0
-    // TODO: temp. Scale down the mesh.
-    m_vertices.push_back(glm::vec4(x / 30.0f, y / 30.0f, z / 30.0f, w));
-#else
-    m_vertices.push_back(glm::vec4(x, y, z, w));
-#endif
-}
-
-void PMesh::addIndex(GLuint i)
-{
-    m_indices.push_back(i);
-
-    // TODO: currently, we cannot process negative indices
-    ATLASSERT(i >= 0);
-}
-#endif
-
 bool PMesh::initialize(const MeshData& data)
 {
     glGenVertexArrays(1, &m_vao);
@@ -110,7 +90,6 @@ void PMesh::render() const
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
 
-    //glDrawElements(GL_TRIANGLE_FAN, m_indexCount, GL_UNSIGNED_INT, 0);
     glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

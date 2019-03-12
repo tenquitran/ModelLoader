@@ -3,10 +3,6 @@
 
 namespace ModelLoaderApp
 {
-    // Unique identifier of the mesh.
-    typedef int MeshId;
-
-
     // Data describing the mesh.
     struct MeshData
     {
@@ -18,6 +14,9 @@ namespace ModelLoaderApp
         std::vector<GLuint> m_indices;
     };
 
+
+    // Unique identifier of the mesh.
+    typedef int MeshId;
 
     // Data about meshes.
     typedef std::map<MeshId, MeshData> Meshes;
