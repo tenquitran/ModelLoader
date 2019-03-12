@@ -18,6 +18,15 @@ ObjParser::~ObjParser()
 
 bool ObjParser::parse(const CAtlString& filePath, PModel& model)
 {
+    int pos = filePath.ReverseFind('\\');
+    if (-1 == pos)
+    {
+        std::wcerr << L"Invalid path format: " << filePath.GetString() << '\n';
+        ATLASSERT(FALSE); return false;
+    }
+
+    m_modelDirectory = filePath.Left(pos);
+
     std::ifstream file(filePath.GetString());
 
     std::string line;
@@ -35,7 +44,7 @@ bool ObjParser::parse(const CAtlString& filePath, PModel& model)
 
     while (getline(file, line))
     {
-        parseLine(line, meshes);
+        parseLine(line, meshes, model);
     }
 
     if (!model.initialize(meshes))
@@ -49,10 +58,10 @@ bool ObjParser::parse(const CAtlString& filePath, PModel& model)
     return true;
 }
 
-void ObjParser::parseLine(const std::string& line, Meshes& meshes)
+bool ObjParser::parseLine(const std::string& line, Meshes& meshes, PModel& model)
 {
     if (line.empty())
-        {return;}
+        {return true;}
     
     std::istringstream ss(line);
 
@@ -63,7 +72,7 @@ void ObjParser::parseLine(const std::string& line, Meshes& meshes)
 
     if ("#" == contents[0])    // comment
     {
-        return;
+        return true;
     }
     else if ("v" == contents[0])    // vertex coordinates
     {
@@ -71,13 +80,7 @@ void ObjParser::parseLine(const std::string& line, Meshes& meshes)
     }
     else if ("vt" == contents[0])    // texture coordinates
     {
-        if (!m_newMesh)
-        {
-            m_newMesh = true;
-        }
-
-        // TODO: implement
-        ;
+        parseTextureCoords(contents, meshes);
     }
     else if ("vn" == contents[0])    // vertex normal
     {
@@ -95,8 +98,10 @@ void ObjParser::parseLine(const std::string& line, Meshes& meshes)
     }
     else if ("mtllib" == contents[0])
     {
-        // TODO: implement
-        ;
+        if (!readMaterialInfo(contents, model))
+        {
+            return false;
+        }
     }
 #if 0     // TODO: parse other data as required
     else if ()
@@ -106,6 +111,8 @@ void ObjParser::parseLine(const std::string& line, Meshes& meshes)
     {
     }
 #endif
+
+    return true;
 }
 
 void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, Meshes& meshes)
@@ -157,7 +164,7 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Meshes
     const char delimiter = '/';
 
     std::vector<GLuint> indices;
-    std::vector<GLuint> texCoords;
+    std::vector<GLuint> texCoordIndices;
     std::vector<GLuint> normalIndices;
 
     std::string item;
@@ -178,7 +185,7 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Meshes
             case 2:
                 if (!item.empty())
                 {
-                    texCoords.push_back(atoi(item.c_str()));
+                    texCoordIndices.push_back(atoi(item.c_str()));
                 }
                 break;
             case 3:
@@ -216,4 +223,102 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Meshes
         // TODO: how to handle this?
         ATLASSERT(FALSE); break;
     }
+}
+
+void ObjParser::parseTextureCoords(const std::vector<std::string>& tokens, Meshes& meshes)
+{
+    if (!m_newMesh)
+    {
+        m_newMesh = true;
+    }
+
+    if (tokens.size() < 2)
+    {
+        ATLASSERT(FALSE); throw EXCEPTION(L"Invalid number of texture coordinates");
+    }
+
+    glm::vec3 texCoord = {
+        atof(tokens[1].c_str()),
+        0.0f,
+        0.0f };
+
+    if (tokens.size() > 2)
+    {
+        texCoord.y = atof(tokens[2].c_str());
+    }
+
+    if (tokens.size() > 3)
+    {
+        texCoord.y = atof(tokens[3].c_str());
+    }
+
+    meshes[m_currentMeshId].m_texCoords.push_back(texCoord);
+}
+
+bool ObjParser::readMaterialInfo(const std::vector<std::string>& tokens, PModel& model)
+{
+    if (tokens.size() < 2)
+    {
+        ATLASSERT(FALSE); throw EXCEPTION(L"Invalid number of material data items");
+    }
+
+    std::string fileName = tokens[1];
+
+    CAtlString filePath;
+    filePath.Format(L"%s\\%S", (LPCTSTR)m_modelDirectory, fileName.c_str());
+
+    std::ifstream file(filePath.GetString());
+
+    std::string line;
+
+    if (!file.is_open())
+    {
+        wchar_t msg[256];
+        _wcserror_s(msg, _countof(msg), errno);
+
+        std::wcerr << L"Failed to open file \"" << filePath.GetString() << ": " << msg << '\n';
+        ATLASSERT(FALSE); return false;
+    }
+
+    // TODO: add material to the mesh using m_currentMeshId.
+    // We'll probably need to refer to a mesh (via the model) instead of storing data in MeshData (to avoid copying textures, etc.).
+#if 0
+    // Currently, the key is the material name.
+    std::map<std::string, Material> materials;
+#endif
+
+    while (getline(file, line))
+    {
+        if (line.empty())
+        {
+            continue;
+        }
+
+        std::istringstream ss(line);
+
+        std::vector<std::string> tokens(
+            (std::istream_iterator<std::string>(ss)),
+            std::istream_iterator<std::string>());
+
+        if ("newmtl" == tokens[0])
+        {
+            ;
+            //materials.insert(std::make_pair(tokens[1], Material(tokens[1])));
+        }
+        else if ("map_Kd" == tokens[0])
+        {
+            // TODO: read the diffuse texture data
+            ;
+        }
+        // TODO: read other data
+#if 0
+        else if ()
+        {
+        }
+#endif
+    }
+
+    file.close();
+
+    return true;
 }

@@ -31,6 +31,8 @@ using namespace ATL;
 
 #include "MeshData.h"
 
+#include "Material.h"
+
 #include "PMesh.h"
 #include "PModel.h"
 

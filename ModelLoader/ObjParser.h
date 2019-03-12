@@ -17,11 +17,15 @@ namespace ModelLoaderApp
         bool parse(const CAtlString& filePath, PModel& model);
 
     private:
-        void parseLine(const std::string& line, Meshes& meshes);
+        bool parseLine(const std::string& line, Meshes& meshes, PModel& model);
 
         void parseVertexCoords(const std::vector<std::string>& tokens, Meshes& meshes);
 
         void parseFaceElements(const std::vector<std::string>& tokens, Meshes& meshes);
+
+        void parseTextureCoords(const std::vector<std::string>& tokens, Meshes& meshes);
+
+        bool readMaterialInfo(const std::vector<std::string>& tokens, PModel& model);
 
     private:
         // true when we need to add new mesh to the model.
@@ -30,9 +34,7 @@ namespace ModelLoaderApp
         // Unique ID of the current mesh.
         MeshId m_currentMeshId = { -1 };
 
-#if 0
-        // Unique ID of the next mesh.
-        MeshId m_nextMeshId = {};
-#endif
+        // Path to the directory containing the model file.
+        CAtlString m_modelDirectory;
     };
 }

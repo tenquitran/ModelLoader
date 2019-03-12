@@ -24,6 +24,10 @@ namespace ModelLoaderApp
         virtual ~PMesh();
 
     private:
+        PMesh(const PMesh&) = delete;
+        PMesh& operator=(const PMesh&) = delete;
+
+    private:
         // Name of the mesh.
         CAtlString m_name;
 

@@ -12,6 +12,9 @@ namespace ModelLoaderApp
 
         // Vertex indices.
         std::vector<GLuint> m_indices;
+
+        // Texture coordinates.
+        std::vector<glm::vec3> m_texCoords;
     };
 
 

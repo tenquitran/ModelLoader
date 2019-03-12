@@ -30,6 +30,10 @@ namespace ModelLoaderApp
         virtual ~PModel();
 
     private:
+        PModel(const PModel&) = delete;
+        PModel& operator=(const PModel&) = delete;
+
+    private:
         // Name of the model.
         CAtlString m_name;
 
