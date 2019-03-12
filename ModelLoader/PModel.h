@@ -21,10 +21,11 @@ namespace ModelLoaderApp
         // Returns: unique ID of the mesh.
         int addMesh();
 
-        // Get mesh.
+        // Get mesh (constant and non-constant versions).
         // Parameters: meshId - unique ID of the mesh.
         // Throws: Exception.
         PMesh& getMesh(int meshId);
+        const PMesh& getMeshConst(int meshId) const;
 
         // Add vertex coordinates to the mesh.
         // Parameters: meshId - unique ID of the mesh;

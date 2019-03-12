@@ -23,16 +23,24 @@ namespace ModelLoaderApp
         // Add vertex index.
         void addIndex(GLuint i);
 
+        bool initialize();
+
+        void render() const;
+
         virtual ~PMesh();
 
-        // TODO: make private
-    public:
-    //private:
+    private:
         // Name of the mesh.
         CAtlString m_name;
 
         std::vector<glm::vec4> m_vertices;
 
         std::vector<GLuint> m_indices;
+
+        GLuint m_vao = {};
+        GLuint m_vbo = {};
+
+        GLuint m_index = {};          // index buffer
+        GLsizei m_indexCount = {};    // number of indices
     };
 }

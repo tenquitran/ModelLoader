@@ -58,6 +58,18 @@ PMesh& PModel::getMesh(int meshId)
     return mesh->second;
 }
 
+const PMesh& PModel::getMeshConst(int meshId) const
+{
+    std::map<int, PMesh>::const_iterator mesh = m_meshes.find(meshId);
+
+    if (m_meshes.cend() == mesh)
+    {
+        ATLASSERT(FALSE); throw EXCEPTION_FMT(L"Model %s: no mesh with ID = %d", (LPCTSTR)getName(), meshId);
+    }
+
+    return mesh->second;
+}
+
 void PModel::addVertex(int meshId, GLfloat x, GLfloat y, GLfloat z, GLfloat w /*= 1.0f*/)
 {
 #if 1

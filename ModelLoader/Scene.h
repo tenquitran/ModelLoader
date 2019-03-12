@@ -47,20 +47,10 @@ namespace ModelLoaderApp
         // GLSL program ID.
         const GLuint m_programId = {};
 
-        //////////////////////////////////////////////////////////////////////////
-
-        // Scene contents: a triangle.
-
-        GLuint m_vao = {};
-        GLuint m_vbo = {};
-
-        GLuint m_index = {};          // index buffer
-        GLsizei m_indexCount = {};    // number of indices
-
-        //////////////////////////////////////////////////////////////////////////
-
+        // Parser for the model files (.OBJ format).
         ObjParser m_objParser;
 
+        // Model to load.
         PModel m_model;
     };
 }

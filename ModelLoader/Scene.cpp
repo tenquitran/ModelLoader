@@ -16,24 +16,6 @@ Scene::Scene(const glm::vec3& backgroundColor, CameraPtr& spCamera, GLuint progr
 
 Scene::~Scene()
 {
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    if (0 != m_index)
-    {
-        glDeleteBuffers(1, &m_index);
-    }
-
-    if (0 != m_vbo)
-    {
-        glDeleteBuffers(1, &m_vbo);
-    }
-
-    if (0 != m_vao)
-    {
-        glBindVertexArray(0);
-        glDeleteVertexArrays(1, &m_vao);
-    }
 }
 
 bool Scene::initialize()
@@ -58,13 +40,6 @@ bool Scene::initialize()
 
 bool Scene::initializeContents()
 {
-    glGenVertexArrays(1, &m_vao);
-    glBindVertexArray(m_vao);
-
-    // TODO: temp
-
-    //PModel model;
-
     // Note: "picture_3.obj" is triangulated while "picture_2.obj" is not.
     //if (!m_objParser.parse(L"E:\\natProgs\\graphics2\\ModelLoader\\ModelLoader\\data\\cube\\cube.obj", m_model))
     //if (!m_objParser.parse(L"E:\\natProgs\\graphics2\\ModelLoader\\ModelLoader\\data\\triangle\\triangle.obj", m_model))
@@ -74,77 +49,13 @@ bool Scene::initializeContents()
         return false;
     }
 
-    // Set up the vertex buffer.
-
-#if 0
-#if 0
-    // Triangle.
-    std::vector<GLfloat> vertices = {
-        -0.90f, -0.90f, 0.0f,
-         0.85f, -0.90f, 0.0f,
-        -0.90f,  0.85f, 0.0f };
-#else
-    // Cube
-    std::vector<GLfloat> vertices = {
-        0.036290f, -0.746189f, 1.024370f,
-        0.036290f, 1.253811f, 1.024370f,
-        0.036290f, -0.746189f, -0.975630f,
-        0.036290f, 1.253811f, -0.975630f,
-        2.036290f, -0.746189f, 1.024370f,
-        2.036290f, 1.253811f, 1.024370f,
-        2.036290f, -0.746189f, -0.975630f,
-        2.036290f, 1.253811f, -0.975630f };
-#endif
-#endif
-
     PMesh& mesh = m_model.getMesh(0);
 
-    glGenBuffers(1, &m_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, mesh.m_vertices.size() * sizeof(mesh.m_vertices[0]), &mesh.m_vertices[0], GL_STATIC_DRAW);
-    //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), &vertices[0], GL_STATIC_DRAW);
-
-    // Fill in the vertex position attribute.
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(0);
-
-    // Set up the index buffer.
-
-#if 0
-    // Triangle
-#if 0
-    std::vector<GLuint> indices = { 0, 1, 2 };
-#else
-    // Cube.
-    std::vector<GLuint> indices = { 
-        1, 2, 0,
-        3, 6, 2,
-        7, 4, 6,
-        5, 0, 4,
-        6, 0, 2,
-        3, 5, 7,
-        1, 3, 2,
-        3, 7, 6,
-        7, 5, 4,
-        5, 1, 0,
-        6, 4, 0,
-        3, 1, 5 };
-#endif
-
-    m_indexCount = indices.size();
-#else
-    //m_indexCount = 12;
-    m_indexCount = mesh.m_indices.size();
-#endif
-
-    glGenBuffers(1, &m_index);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), &indices[0], GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.m_indices.size() * sizeof(mesh.m_indices[0]), &mesh.m_indices[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    if (!mesh.initialize())
+    {
+        std::wcerr << L"Mesh initialization failed\n";
+        return false;
+    }
 
     updateUniforms();
 
@@ -226,15 +137,8 @@ void Scene::render() const
     updateUniforms();
 
     glUseProgram(m_programId);
-    glBindVertexArray(m_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
 
-    //glDrawElements(GL_TRIANGLE_FAN, m_indexCount, GL_UNSIGNED_INT, 0);
-    glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
+    m_model.getMeshConst(0).render();
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
     glUseProgram(0);
 }
