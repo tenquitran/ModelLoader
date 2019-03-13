@@ -29,10 +29,12 @@ using namespace ATL;
 
 #include "../../CommonLibOgl/CommonLibOgl/CommonLibOgl.h"
 
-#include "MeshData.h"
+#include "PMeshPartInfo.h"
+#include "PMeshData.h"
 
-#include "Material.h"
+#include "PMaterial.h"
 
+#include "PMeshPart.h"
 #include "PMesh.h"
 #include "PModel.h"
 

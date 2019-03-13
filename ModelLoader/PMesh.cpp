@@ -55,7 +55,14 @@ CAtlString PMesh::getName() const
     return m_name;
 }
 
-bool PMesh::initialize(const MeshData& data)
+#if 0
+void PMesh::addMeshPart(const std::string& materialName, size_t firstIndex)
+{
+    m_meshParts.push_back(PMeshPart(materialName, firstIndex));
+}
+#endif
+
+bool PMesh::initialize(const PMeshData& data)
 {
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
@@ -81,6 +88,14 @@ bool PMesh::initialize(const MeshData& data)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    // Add parts of the mesh using separate materials.
+    for (const auto& itr : data.m_meshParts)
+    {
+        // TODO: implement
+        ATLASSERT(FALSE);
+        //m_meshParts.push_back(PMeshPart(itr));
+    }
+
     return true;
 }
 
@@ -90,7 +105,16 @@ void PMesh::render() const
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
 
-    glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
+    // TODO: store 6 in a variable
+#if 1
+    // TODO: use the first material
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    // TODO: use the second material
+    glDrawElements(GL_TRIANGLES, m_indexCount - 6, GL_UNSIGNED_INT, (const GLvoid * )(6 * sizeof(GLuint)));
+#endif
+
+    //glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

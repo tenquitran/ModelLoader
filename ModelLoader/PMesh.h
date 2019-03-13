@@ -17,15 +17,24 @@ namespace ModelLoaderApp
         void setName(const CAtlString& name);
         CAtlString getName() const;
 
-        bool initialize(const MeshData& data);
+#if 0
+        // Add part of the mesh using the separate material.
+        // Parameters: materialName - name of the material used by this part of the mesh;
+        //             firstIndex - offset of the first index of the mesh part.
+        void addMeshPart(const std::string& materialName, size_t firstIndex);
+#endif
+
+        bool initialize(const PMeshData& data);
 
         void render() const;
 
         virtual ~PMesh();
 
+#if 0
     private:
         PMesh(const PMesh&) = delete;
         PMesh& operator=(const PMesh&) = delete;
+#endif
 
     private:
         // Name of the mesh.
@@ -36,5 +45,8 @@ namespace ModelLoaderApp
 
         GLuint m_index = {};          // index buffer
         GLsizei m_indexCount = {};    // number of indices
+
+        // Parts of the mesh, each using a separate material.
+        std::vector<PMeshPart> m_meshParts;
     };
 }

@@ -8,7 +8,7 @@ using namespace ModelLoaderApp;
 //////////////////////////////////////////////////////////////////////////
 
 
-Material::Material(const std::string& name)
+PMaterial::PMaterial(const std::string& name)
     : m_name(name.c_str())
 {
     if (m_name.IsEmpty())
@@ -17,6 +17,6 @@ Material::Material(const std::string& name)
     }
 }
 
-Material::~Material()
+PMaterial::~PMaterial()
 {
 }

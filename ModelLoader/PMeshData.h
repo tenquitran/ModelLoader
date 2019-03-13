@@ -4,7 +4,7 @@
 namespace ModelLoaderApp
 {
     // Data describing the mesh.
-    struct MeshData
+    struct PMeshData
     {
     public:
         // Vertex coordinates.
@@ -15,6 +15,9 @@ namespace ModelLoaderApp
 
         // Texture coordinates.
         std::vector<glm::vec3> m_texCoords;
+
+        // Parts of the mesh, each using a separate material.
+        std::vector<PMeshPartInfo> m_meshParts;
     };
 
 
@@ -22,5 +25,5 @@ namespace ModelLoaderApp
     typedef int MeshId;
 
     // Data about meshes.
-    typedef std::map<MeshId, MeshData> Meshes;
+    typedef std::map<MeshId, PMeshData> Meshes;
 }

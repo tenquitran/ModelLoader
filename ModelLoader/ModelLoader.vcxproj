@@ -81,9 +81,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="MeshData.h" />
+    <ClInclude Include="PMaterial.h" />
+    <ClInclude Include="PMeshData.h" />
     <ClInclude Include="PMesh.h" />
+    <ClInclude Include="PMeshPart.h" />
+    <ClInclude Include="PMeshPartInfo.h" />
     <ClInclude Include="PModel.h" />
     <ClInclude Include="ObjParser.h" />
     <ClInclude Include="Resource.h" />
@@ -93,8 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entryPoint.cpp" />
-    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="PMaterial.cpp" />
     <ClCompile Include="PMesh.cpp" />
+    <ClCompile Include="PMeshPart.cpp" />
     <ClCompile Include="PModel.cpp" />
     <ClCompile Include="ObjParser.cpp" />
     <ClCompile Include="Scene.cpp" />

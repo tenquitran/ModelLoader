@@ -103,6 +103,19 @@ bool ObjParser::parseLine(const std::string& line, Meshes& meshes, PModel& model
             return false;
         }
     }
+    else if ("usemtl" == contents[0])
+    {
+        // Add new part of the mesh using the specified material.
+        
+#if 1
+        // TODO: add PMeshPartInfo to PMeshData;
+        // call PMeshPartInfo::increaseIndexCount() on each subsequent "f" until encountering another "usemtl"
+#else
+        // TODO: call addMeshPart() here 
+        // and PMeshPart::increaseIndexCount() on each subsequent "f" until encountering another "usemtl"
+#endif
+        ;
+    }
 #if 0     // TODO: parse other data as required
     else if ()
     {
@@ -124,7 +137,7 @@ void ObjParser::parseVertexCoords(const std::vector<std::string>& tokens, Meshes
 
     if (m_newMesh)
     {
-        meshes.insert(std::make_pair(++m_currentMeshId, MeshData()));
+        meshes.insert(std::make_pair(++m_currentMeshId, PMeshData()));
 
         m_newMesh = false;
     }

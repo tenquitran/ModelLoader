@@ -3,12 +3,12 @@
 
 namespace ModelLoaderApp
 {
-    class Material
+    class PMaterial
     {
     public:
-        explicit Material(const std::string& name);
+        explicit PMaterial(const std::string& name);
 
-        virtual ~Material();
+        virtual ~PMaterial();
 
 #if 0
     private:
