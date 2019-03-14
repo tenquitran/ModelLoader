@@ -25,7 +25,7 @@ bool ObjParser::parse(const CAtlString& filePath, PModel& model)
         ATLASSERT(FALSE); return false;
     }
 
-    m_modelDirectory = filePath.Left(pos);
+    m_modelDirectory = CT2A(filePath.Left(pos));
 
     std::ifstream file(filePath.GetString());
 
@@ -41,13 +41,14 @@ bool ObjParser::parse(const CAtlString& filePath, PModel& model)
     }
 
     Meshes meshes;
+    Materials materials;
 
     while (getline(file, line))
     {
-        parseLine(line, meshes, model);
+        parseLine(line, meshes, materials);
     }
 
-    if (!model.initialize(meshes))
+    if (!model.initialize(meshes, materials))
     {
         std::wcerr << L"Model initialization failed\n";
         return false;
@@ -58,7 +59,7 @@ bool ObjParser::parse(const CAtlString& filePath, PModel& model)
     return true;
 }
 
-bool ObjParser::parseLine(const std::string& line, Meshes& meshes, PModel& model)
+bool ObjParser::parseLine(const std::string& line, Meshes& meshes, Materials& materials)
 {
     if (line.empty())
         {return true;}
@@ -98,7 +99,7 @@ bool ObjParser::parseLine(const std::string& line, Meshes& meshes, PModel& model
     }
     else if ("mtllib" == contents[0])
     {
-        if (!readMaterialInfo(contents, model))
+        if (!readMaterialInfo(contents, materials))
         {
             return false;
         }
@@ -107,9 +108,15 @@ bool ObjParser::parseLine(const std::string& line, Meshes& meshes, PModel& model
     {
         // Add new part of the mesh using the specified material.
         
+        if (contents.size() < 2)
+        {
+            std::wcerr << L"usemtl: no material name\n";
+            ATLASSERT(FALSE); return false;
+        }
 #if 1
         // TODO: add PMeshPartInfo to PMeshData;
         // call PMeshPartInfo::increaseIndexCount() on each subsequent "f" until encountering another "usemtl"
+        meshes[m_currentMeshId].m_meshParts.emplace_back(PMeshPartInfo(contents[1], m_meshPartIndex));
 #else
         // TODO: call addMeshPart() here 
         // and PMeshPart::increaseIndexCount() on each subsequent "f" until encountering another "usemtl"
@@ -220,17 +227,26 @@ void ObjParser::parseFaceElements(const std::vector<std::string>& tokens, Meshes
         for (const auto& ind : indices)
         {
             meshes[m_currentMeshId].m_indices.push_back(ind - 1);
+
+            ++m_meshPartIndex;
         }
         break;
     case 4:    // quadrilateral: the order is 0, 1, 2 for the first triangle and 0, 2, 3 for the second one
         for (size_t m = {}; m < 3; ++m)
         {
             meshes[m_currentMeshId].m_indices.push_back(indices[m] - 1);
+
+            ++m_meshPartIndex;
         }
 
         meshes[m_currentMeshId].m_indices.push_back(indices[0] - 1);
+        ++m_meshPartIndex;
+
         meshes[m_currentMeshId].m_indices.push_back(indices[2] - 1);
+        ++m_meshPartIndex;
+
         meshes[m_currentMeshId].m_indices.push_back(indices[3] - 1);
+        ++m_meshPartIndex;
         break;
     default:
         // TODO: how to handle this?
@@ -268,7 +284,7 @@ void ObjParser::parseTextureCoords(const std::vector<std::string>& tokens, Meshe
     meshes[m_currentMeshId].m_texCoords.push_back(texCoord);
 }
 
-bool ObjParser::readMaterialInfo(const std::vector<std::string>& tokens, PModel& model)
+bool ObjParser::readMaterialInfo(const std::vector<std::string>& tokens, Materials& materials)
 {
     if (tokens.size() < 2)
     {
@@ -278,7 +294,7 @@ bool ObjParser::readMaterialInfo(const std::vector<std::string>& tokens, PModel&
     std::string fileName = tokens[1];
 
     CAtlString filePath;
-    filePath.Format(L"%s\\%S", (LPCTSTR)m_modelDirectory, fileName.c_str());
+    filePath.Format(L"%S\\%S", m_modelDirectory.c_str(), fileName.c_str());
 
     std::ifstream file(filePath.GetString());
 
@@ -300,6 +316,8 @@ bool ObjParser::readMaterialInfo(const std::vector<std::string>& tokens, PModel&
     std::map<std::string, Material> materials;
 #endif
 
+    std::string currentMaterial;
+
     while (getline(file, line))
     {
         if (line.empty())
@@ -313,15 +331,27 @@ bool ObjParser::readMaterialInfo(const std::vector<std::string>& tokens, PModel&
             (std::istream_iterator<std::string>(ss)),
             std::istream_iterator<std::string>());
 
-        if ("newmtl" == tokens[0])
+        if ("newmtl" == tokens[0])    // material name
         {
-            ;
-            //materials.insert(std::make_pair(tokens[1], Material(tokens[1])));
+            if (tokens.size() < 2)
+            {
+                std::wcerr << L"No material name\n";
+                ATLASSERT(FALSE); return false;
+            }
+
+            currentMaterial = tokens[1];
+
+            materials.emplace(std::make_pair(currentMaterial, PMaterialInfo(currentMaterial)));
         }
-        else if ("map_Kd" == tokens[0])
+        else if ("map_Kd" == tokens[0])    // diffuse texture name
         {
-            // TODO: read the diffuse texture data
-            ;
+            if (tokens.size() < 2)
+            {
+                std::wcerr << L"No diffuse texture name\n";
+                ATLASSERT(FALSE); return false;
+            }
+
+            materials[currentMaterial].m_texDiffusePath = m_modelDirectory + '\\' + tokens[1];
         }
         // TODO: read other data
 #if 0

@@ -61,19 +61,26 @@ const PMesh& PModel::getMeshConst(MeshId meshId) const
     return mesh->second;
 }
 
-bool PModel::initialize(const Meshes& meshes)
+bool PModel::initialize(const Meshes& meshes, const Materials& materials)
 {
+    // Initialize meshes.
     for (const auto& itr : meshes)
     {
         MeshId id = itr.first;
 
-        m_meshes.insert(std::make_pair(id, PMesh()));
+        m_meshes.emplace(std::make_pair(id, PMesh()));
 
         if (!m_meshes[id].initialize(itr.second))
         {
             std::wcerr << L"Failed to initialize mesh (ID = " << itr.first << '\n';
             ATLASSERT(FALSE); return false;
         }
+    }
+
+    // Initialize materials.
+    for (const auto& itr : materials)
+    {
+        m_materials.emplace(std::make_pair(itr.first, PMaterial(itr.second)));
     }
 
     return true;

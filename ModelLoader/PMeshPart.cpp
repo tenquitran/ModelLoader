@@ -9,9 +9,13 @@ using namespace ModelLoaderApp;
 
 
 PMeshPart::PMeshPart(const std::string& materialName, size_t firstIndex, size_t indexCount)
-    : m_material(materialName), m_firstIndex(firstIndex), m_indexCount(indexCount)
+    : m_materialName(materialName), m_firstIndex(firstIndex), m_indexCount(indexCount)
 {
-    if (m_indexCount < 1)
+    if (m_materialName.empty())
+    {
+        ATLASSERT(FALSE); throw EXCEPTION(L"Empty material name");
+    }
+    else if (m_indexCount < 1)
     {
         ATLASSERT(FALSE); throw EXCEPTION(L"Mesh part: invalid index count");
     }
@@ -21,9 +25,12 @@ PMeshPart::~PMeshPart()
 {
 }
 
-#if 0
-void PMeshPart::increaseIndexCount()
+size_t PMeshPart::getFirstIndex() const
 {
-    ++m_indexCount;
+    return m_firstIndex;
 }
-#endif
+
+size_t PMeshPart::getIndexCount() const
+{
+    return m_indexCount;
+}

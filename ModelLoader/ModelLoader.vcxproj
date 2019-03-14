@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PMaterial.h" />
+    <ClInclude Include="PMaterialInfo.h" />
     <ClInclude Include="PMeshData.h" />
     <ClInclude Include="PMesh.h" />
     <ClInclude Include="PMeshPart.h" />

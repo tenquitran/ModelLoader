@@ -23,7 +23,10 @@ namespace ModelLoaderApp
         PMesh& getMesh(MeshId meshId);
         const PMesh& getMeshConst(MeshId meshId) const;
 
-        bool initialize(const Meshes& meshes);
+        // Initialize the model.
+        // Parameters: meshes - meshes data;
+        //             materials - materials data.
+        bool initialize(const Meshes& meshes, const Materials& materials);
 
         void render() const;
 
@@ -42,5 +45,9 @@ namespace ModelLoaderApp
 
         // Unique ID of the next mesh.
         MeshId m_nextMeshId = {};
+
+        // Materials.
+        // Key: material name; value: material data.
+        std::map<std::string, PMaterial> m_materials;
     };
 }

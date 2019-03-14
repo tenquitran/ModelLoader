@@ -13,21 +13,15 @@ namespace ModelLoaderApp
         //             indexCount - number of indices in the mesh part.
         PMeshPart(const std::string& materialName, size_t firstIndex, size_t indexCount);
 
-#if 0
-        void increaseIndexCount();
-#endif
-
         virtual ~PMeshPart();
 
-#if 0
-    private:
-        PMeshPart(const PMeshPart&) = delete;
-        PMeshPart& operator=(const PMeshPart&) = delete;
-#endif
+        size_t getFirstIndex() const;
+
+        size_t getIndexCount() const;
 
     private:
         // Name of the material.
-        PMaterial m_material;
+        std::string m_materialName;
 
         // Offset of the first index of the mesh part (relative to the first index of the parent mesh).
         size_t m_firstIndex = {};

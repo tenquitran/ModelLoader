@@ -89,11 +89,34 @@ bool PMesh::initialize(const PMeshData& data)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Add parts of the mesh using separate materials.
-    for (const auto& itr : data.m_meshParts)
+
+    // Number of mesh parts.
+    const size_t numberOfParts = data.m_meshParts.size();
+
+    // Indices used by all parts of the mesh.
+    size_t usedlndices = {};
+    
+    for (size_t i = {}; i < numberOfParts; ++i)
     {
-        // TODO: implement
-        ATLASSERT(FALSE);
-        //m_meshParts.push_back(PMeshPart(itr));
+        if (i + 1 < numberOfParts)
+        {
+            // Number of indices in the current part of the mesh.
+            size_t meshPartIndices = data.m_meshParts[i + 1].m_firstIndex - data.m_meshParts[i].m_firstIndex;
+
+            m_meshParts.emplace_back(PMeshPart(
+                data.m_meshParts[i].m_materialName, 
+                data.m_meshParts[i].m_firstIndex, 
+                meshPartIndices));
+
+            usedlndices += meshPartIndices;
+        }
+        else
+        {
+            m_meshParts.emplace_back(PMeshPart(
+                data.m_meshParts[i].m_materialName,
+                data.m_meshParts[i].m_firstIndex,
+                data.m_indices.size() - usedlndices));    /* the last part of the mesh uses all the remaining indices */
+        }
     }
 
     return true;
@@ -105,16 +128,12 @@ void PMesh::render() const
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index);
 
-    // TODO: store 6 in a variable
-#if 1
-    // TODO: use the first material
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    // TODO: use the second material
-    glDrawElements(GL_TRIANGLES, m_indexCount - 6, GL_UNSIGNED_INT, (const GLvoid * )(6 * sizeof(GLuint)));
-#endif
-
-    //glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
+    // Render each part of the mesh using the corresponding material.
+    for (const auto& part : m_meshParts)
+    {
+        // TODO: use the material
+        glDrawElements(GL_TRIANGLES, part.getIndexCount(), GL_UNSIGNED_INT, (const GLvoid *)(part.getFirstIndex() * sizeof(GLuint)));
+    }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

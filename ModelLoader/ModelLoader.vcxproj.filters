@@ -22,6 +22,9 @@
     <Filter Include="MeshData">
       <UniqueIdentifier>{a1043168-be46-42a8-94ad-89e8abb9620f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Materials">
+      <UniqueIdentifier>{1f11aa01-b1d0-416c-842f-acd9eb7a8001}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -51,14 +54,17 @@
     <ClInclude Include="PMeshPart.h">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="PMaterial.h">
-      <Filter>Model</Filter>
-    </ClInclude>
     <ClInclude Include="PMeshData.h">
       <Filter>MeshData</Filter>
     </ClInclude>
     <ClInclude Include="PMeshPartInfo.h">
       <Filter>MeshData</Filter>
+    </ClInclude>
+    <ClInclude Include="PMaterialInfo.h">
+      <Filter>MeshData</Filter>
+    </ClInclude>
+    <ClInclude Include="PMaterial.h">
+      <Filter>Materials</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -84,7 +90,7 @@
       <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="PMaterial.cpp">
-      <Filter>Model</Filter>
+      <Filter>Materials</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

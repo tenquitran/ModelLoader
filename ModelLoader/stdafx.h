@@ -29,6 +29,7 @@ using namespace ATL;
 
 #include "../../CommonLibOgl/CommonLibOgl/CommonLibOgl.h"
 
+#include "PMaterialInfo.h"
 #include "PMeshPartInfo.h"
 #include "PMeshData.h"
 

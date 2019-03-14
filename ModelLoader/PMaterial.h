@@ -6,7 +6,7 @@ namespace ModelLoaderApp
     class PMaterial
     {
     public:
-        explicit PMaterial(const std::string& name);
+        explicit PMaterial(const PMaterialInfo& info);
 
         virtual ~PMaterial();
 
@@ -17,7 +17,17 @@ namespace ModelLoaderApp
 #endif
 
     private:
+        // Parameters: texDiffusePath - path to the diffuse texture file.
+        bool initialize(const std::string& texDiffusePath);
+
+    private:
         // Name of the material.
-        const CAtlString m_name;
+        const std::string m_name;
+
+        // Diffuse texture ID.
+        GLuint m_texDiffuseId = {};
+
+        // Diffuse texture sampler.
+        GLint m_texDiffuseSampler = {};
     };
 }
