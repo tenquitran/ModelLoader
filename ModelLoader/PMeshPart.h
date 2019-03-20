@@ -15,6 +15,8 @@ namespace ModelLoaderApp
 
         virtual ~PMeshPart();
 
+        std::string getMaterialName() const;
+
         size_t getFirstIndex() const;
 
         size_t getIndexCount() const;

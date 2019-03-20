@@ -8,7 +8,7 @@ using namespace ModelLoaderApp;
 //////////////////////////////////////////////////////////////////////////
 
 
-PMaterial::PMaterial(const PMaterialInfo& info)
+PMaterial::PMaterial(const PMaterialInfo& info, GLuint programId)
     : m_name(info.m_materialName)
 {
     if (m_name.empty())
@@ -16,7 +16,7 @@ PMaterial::PMaterial(const PMaterialInfo& info)
         ATLASSERT(FALSE); throw EXCEPTION(L"Empty material name");
     }
     
-    if (!initialize(info.m_texDiffusePath))
+    if (!initialize(info.m_texDiffusePath, programId))
     {
         ATLASSERT(FALSE); throw EXCEPTION_FMT(L"Failed to initialize the \"%s\" material", m_name);
     }
@@ -31,7 +31,12 @@ PMaterial::~PMaterial()
     }
 }
 
-bool PMaterial::initialize(const std::string& texDiffusePath)
+GLuint PMaterial::getDiffuseTextureId() const
+{
+    return m_texDiffuseId;
+}
+
+bool PMaterial::initialize(const std::string& texDiffusePath, GLuint programId)
 {
     if (texDiffusePath.empty())
     {
@@ -70,4 +75,19 @@ bool PMaterial::initialize(const std::string& texDiffusePath)
     // Copy the texture file data to the texture object.
     glBindTexture(GL_TEXTURE_2D, m_texDiffuseId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, spData.get());
+
+    // For each textures sampler uniform, tell OpenGL to which texture unit it belongs to using glUniform1i().
+    // As we have only one texture, it's not necessary (at least with most OpenGL drivers) but useful for clarity.
+    // With several textures, it's required.
+
+    m_texDiffuseSampler = glGetUniformLocation(programId, "texDiffuse");
+    if (-1 == m_texDiffuseSampler)
+    {
+        std::wcerr << L"Failed to find diffuse texture sampler\n";
+        ATLASSERT(FALSE); return false;
+    }
+
+    glUniform1i(m_texDiffuseSampler, 0);
+
+    return true;
 }

@@ -16,7 +16,7 @@ ObjParser::~ObjParser()
 {
 }
 
-bool ObjParser::parse(const CAtlString& filePath, PModel& model)
+bool ObjParser::parse(const CAtlString& filePath, PModel& model, GLuint programId)
 {
     int pos = filePath.ReverseFind('\\');
     if (-1 == pos)
@@ -48,7 +48,7 @@ bool ObjParser::parse(const CAtlString& filePath, PModel& model)
         parseLine(line, meshes, materials);
     }
 
-    if (!model.initialize(meshes, materials))
+    if (!model.initialize(meshes, materials, programId))
     {
         std::wcerr << L"Model initialization failed\n";
         return false;
@@ -278,7 +278,7 @@ void ObjParser::parseTextureCoords(const std::vector<std::string>& tokens, Meshe
 
     if (tokens.size() > 3)
     {
-        texCoord.y = atof(tokens[3].c_str());
+        texCoord.z = atof(tokens[3].c_str());
     }
 
     meshes[m_currentMeshId].m_texCoords.push_back(texCoord);

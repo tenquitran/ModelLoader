@@ -61,7 +61,7 @@ const PMesh& PModel::getMeshConst(MeshId meshId) const
     return mesh->second;
 }
 
-bool PModel::initialize(const Meshes& meshes, const Materials& materials)
+bool PModel::initialize(const Meshes& meshes, const Materials& materials, GLuint programId)
 {
     // Initialize meshes.
     for (const auto& itr : meshes)
@@ -70,7 +70,7 @@ bool PModel::initialize(const Meshes& meshes, const Materials& materials)
 
         m_meshes.emplace(std::make_pair(id, PMesh()));
 
-        if (!m_meshes[id].initialize(itr.second))
+        if (!m_meshes[id].initialize(itr.second, this))
         {
             std::wcerr << L"Failed to initialize mesh (ID = " << itr.first << '\n';
             ATLASSERT(FALSE); return false;
@@ -80,7 +80,7 @@ bool PModel::initialize(const Meshes& meshes, const Materials& materials)
     // Initialize materials.
     for (const auto& itr : materials)
     {
-        m_materials.emplace(std::make_pair(itr.first, PMaterial(itr.second)));
+        m_materials.emplace(std::make_pair(itr.first, PMaterial(itr.second, programId)));
     }
 
     return true;
@@ -92,4 +92,17 @@ void PModel::render() const
     {
         itr.second.render();
     }
+}
+
+const PMaterial* PModel::findMaterial(const std::string& name) const
+{
+    for (const auto& itr : m_materials)
+    {
+        if (0 == itr.first.compare(name))
+        {
+            return &itr.second;
+        }
+    }
+
+    return nullptr;
 }

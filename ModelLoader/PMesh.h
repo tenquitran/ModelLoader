@@ -3,6 +3,9 @@
 
 namespace ModelLoaderApp
 {
+    class PModel;
+
+
     // Mesh. The prefix "P" is used to avoid name clash with the Mesh class from the CommonLibOgl library.
     class PMesh
     {
@@ -24,7 +27,7 @@ namespace ModelLoaderApp
         void addMeshPart(const std::string& materialName, size_t firstIndex);
 #endif
 
-        bool initialize(const PMeshData& data);
+        bool initialize(const PMeshData& data, const PModel* parentModel);
 
         void render() const;
 
@@ -48,5 +51,7 @@ namespace ModelLoaderApp
 
         // Parts of the mesh, each using a separate material.
         std::vector<PMeshPart> m_meshParts;
+
+        const PModel* m_pParentModel = { nullptr };
     };
 }

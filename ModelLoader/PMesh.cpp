@@ -62,8 +62,16 @@ void PMesh::addMeshPart(const std::string& materialName, size_t firstIndex)
 }
 #endif
 
-bool PMesh::initialize(const PMeshData& data)
+bool PMesh::initialize(const PMeshData& data, const PModel* parentModel)
 {
+    m_pParentModel = parentModel;
+
+    if (!m_pParentModel)
+    {
+        std::wcerr << L"Parent model is NULL\n";
+        ATLASSERT(FALSE); return false;
+    }
+
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
 
@@ -87,6 +95,10 @@ bool PMesh::initialize(const PMeshData& data)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Set the texture coordinates vertex attribute.
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, &data.m_texCoords[0]);
+    glEnableVertexAttribArray(1);
 
     // Add parts of the mesh using separate materials.
 
@@ -131,8 +143,22 @@ void PMesh::render() const
     // Render each part of the mesh using the corresponding material.
     for (const auto& part : m_meshParts)
     {
-        // TODO: use the material
+        // Find and use the material for the part of the mesh.
+
+        const PMaterial *pMat = m_pParentModel->findMaterial(part.getMaterialName());
+        ATLASSERT(pMat);
+
+        if (pMat)
+        {
+            // Activate texture unit zero and bind our texture to it.
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, pMat->getDiffuseTextureId());
+        }
+
         glDrawElements(GL_TRIANGLES, part.getIndexCount(), GL_UNSIGNED_INT, (const GLvoid *)(part.getFirstIndex() * sizeof(GLuint)));
+
+        if (pMat)
+            {glBindTexture(GL_TEXTURE_2D, 0);}
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

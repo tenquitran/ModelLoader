@@ -12,9 +12,10 @@ namespace ModelLoaderApp
 
         // Parse the OBJ file.
         // Parameters: filePath - full or partial path to the OBJ file;
-        //             model - the resulting model.
+        //             model - the resulting model;
+        //             programId - GLSL program ID.
         // Returns: true on success, false otherwise.
-        bool parse(const CAtlString& filePath, PModel& model);
+        bool parse(const CAtlString& filePath, PModel& model, GLuint programId);
 
 #if 0
         // Get path to the directory containing the model file.

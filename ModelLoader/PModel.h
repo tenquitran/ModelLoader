@@ -14,6 +14,8 @@ namespace ModelLoaderApp
         PModel();
 #endif
 
+        virtual ~PModel();
+
         void setName(const CAtlString& name);
         CAtlString getName() const;
 
@@ -25,12 +27,15 @@ namespace ModelLoaderApp
 
         // Initialize the model.
         // Parameters: meshes - meshes data;
-        //             materials - materials data.
-        bool initialize(const Meshes& meshes, const Materials& materials);
+        //             materials - materials data;
+        //             programId - GLSL program ID.
+        bool initialize(const Meshes& meshes, const Materials& materials, GLuint programId);
 
         void render() const;
 
-        virtual ~PModel();
+        // Find material by its name.
+        // Returns NULL if no material is found.
+        const PMaterial* findMaterial(const std::string& name) const;
 
     private:
         PModel(const PModel&) = delete;

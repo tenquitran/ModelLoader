@@ -43,7 +43,7 @@ bool Scene::initializeContents()
     // Note: "picture_3.obj" is triangulated while "picture_2.obj" is not.
     //if (!m_objParser.parse(L"E:\\natProgs\\graphics2\\ModelLoader\\ModelLoader\\data\\cube\\cube.obj", m_model))
     //if (!m_objParser.parse(L"E:\\natProgs\\graphics2\\ModelLoader\\ModelLoader\\data\\triangle\\triangle.obj", m_model))
-    if (!m_objParser.parse(L"E:\\natProgs\\graphics2\\ModelLoader\\ModelLoader\\data\\picture_2\\picture_2.obj", m_model))
+    if (!m_objParser.parse(L"E:\\natProgs\\graphics2\\ModelLoader\\ModelLoader\\data\\picture_2\\picture_2.obj", m_model, m_programId))
     //if (!m_objParser.parse(L"data\\picture_2\\picture_2.obj", model))
     {
         return false;

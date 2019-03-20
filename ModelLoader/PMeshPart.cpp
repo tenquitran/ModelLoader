@@ -25,6 +25,11 @@ PMeshPart::~PMeshPart()
 {
 }
 
+std::string PMeshPart::getMaterialName() const
+{
+    return m_materialName;
+}
+
 size_t PMeshPart::getFirstIndex() const
 {
     return m_firstIndex;
