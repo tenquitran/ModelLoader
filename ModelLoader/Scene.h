@@ -9,7 +9,8 @@ namespace ModelLoaderApp
     public:
         Scene(const glm::vec3& backgroundColor,
             CommonLibOgl::CameraPtr& spCamera,
-            GLuint programId);
+            GLuint programId,
+            const CommonLibOgl::OpenGLInfo& openGLInfo);
 
         virtual ~Scene();
 
@@ -19,6 +20,9 @@ namespace ModelLoaderApp
 
         // Render the derived scene.
         virtual void render() const override;
+
+        // Get GLSL program ID (zero means error).
+        GLuint getProgramId() const;
 
         //////////////////////////////////////////////////////////////////////////
         // Camera control.
@@ -46,6 +50,8 @@ namespace ModelLoaderApp
 
         // GLSL program ID.
         const GLuint m_programId = {};
+
+        CommonLibOgl::OpenGLInfo m_openGLInfo;
 
         // Parser for the model files (.OBJ format).
         ObjParser m_objParser;

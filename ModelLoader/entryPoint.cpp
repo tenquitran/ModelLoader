@@ -78,7 +78,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 
         glm::vec3 backgroundColor(0.8f, 0.93f, 0.96f);    // very light blue
 
-        std::shared_ptr<IScene> spScene = std::make_shared<Scene>(backgroundColor, spCamera, program.getProgram());
+        std::shared_ptr<IScene> spScene = std::make_shared<Scene>(backgroundColor, spCamera, program.getProgram(), openGLInfo);
 
         if (!program.validate())
         {

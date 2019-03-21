@@ -28,6 +28,11 @@ PMesh::~PMesh()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+    if (0 != m_texCoord)
+    {
+        glDeleteBuffers(1, &m_texCoord);
+    }
+
     if (0 != m_index)
     {
         glDeleteBuffers(1, &m_index);
@@ -96,9 +101,17 @@ bool PMesh::initialize(const PMeshData& data, const PModel* parentModel)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    // Set the texture coordinates vertex attribute.
+    // Fill in the texture coordinates vertex attribute.
+#if 1
+    glGenBuffers(1, &m_texCoord);
+    glBindBuffer(GL_ARRAY_BUFFER, m_texCoord);
+    glBufferData(GL_ARRAY_BUFFER, data.m_texCoords.size() * sizeof(&data.m_texCoords[0]), &data.m_texCoords[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(1);
+#else
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, &data.m_texCoords[0]);
     glEnableVertexAttribArray(1);
+#endif
 
     // Add parts of the mesh using separate materials.
 
@@ -158,7 +171,9 @@ void PMesh::render() const
         glDrawElements(GL_TRIANGLES, part.getIndexCount(), GL_UNSIGNED_INT, (const GLvoid *)(part.getFirstIndex() * sizeof(GLuint)));
 
         if (pMat)
-            {glBindTexture(GL_TEXTURE_2D, 0);}
+        {
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

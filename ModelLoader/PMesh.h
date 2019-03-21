@@ -49,6 +49,8 @@ namespace ModelLoaderApp
         GLuint m_index = {};          // index buffer
         GLsizei m_indexCount = {};    // number of indices
 
+        GLuint m_texCoord = {};    // texture coordinates buffer
+
         // Parts of the mesh, each using a separate material.
         std::vector<PMeshPart> m_meshParts;
 

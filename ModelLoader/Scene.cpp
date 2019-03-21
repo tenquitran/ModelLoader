@@ -9,13 +9,18 @@ using namespace ModelLoaderApp;
 //////////////////////////////////////////////////////////////////////////
 
 
-Scene::Scene(const glm::vec3& backgroundColor, CameraPtr& spCamera, GLuint programId)
-    : m_backgroundColor(backgroundColor), m_spCamera(spCamera), m_programId(programId)
+Scene::Scene(const glm::vec3& backgroundColor, CameraPtr& spCamera, GLuint programId, const OpenGLInfo& openGLInfo)
+    : m_backgroundColor(backgroundColor), m_spCamera(spCamera), m_programId(programId), m_openGLInfo(openGLInfo)
 {
 }
 
 Scene::~Scene()
 {
+}
+
+GLuint Scene::getProgramId() const
+{
+    return m_programId;
 }
 
 bool Scene::initialize()
@@ -67,9 +72,15 @@ void Scene::updateUniforms() const
     //     1) comment out the uniforms you don't need.
     //     2) correct the uniform locations if required.
 
-    glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(m_spCamera->getModelViewProjectionMatrix()));
+    glm::mat4 modelView = m_spCamera->getModelViewMatrix();
+
+    glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(modelView));
+
+    glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_spCamera->getProjectionMatrix()));
 
 #if 0
+    glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(m_spCamera->getModelViewProjectionMatrix()));
+
     glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_spCamera->getProjectionMatrix()));
 
     glm::mat4 modelView = m_spCamera->getModelViewMatrix();
@@ -115,6 +126,25 @@ void Scene::scaleCamera(GLfloat amount)
 
 void Scene::resize(GLfloat aspectRatio)
 {
+#if 0    // Done by the camera.
+    // Set up a perspective projection matrix.
+#if 0
+    // Deprecated.
+    gluPerspective(m_openGLInfo.FieldOfView, aspectRatio, m_openGLInfo.FrustumNear, m_openGLInfo.FrustumFar);
+#else
+    glm::mat4 projection = glm::perspective(
+        m_openGLInfo.FieldOfView, aspectRatio, m_openGLInfo.FrustumNear, m_openGLInfo.FrustumFar);
+
+    ATLASSERT(m_programId);
+    glUseProgram(m_programId);
+
+    // The first argument is the projection uniform location.
+    glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(projection));
+
+    glUseProgram(0);
+#endif
+#endif
+
     m_spCamera->resize(aspectRatio);
 
     updateUniforms();

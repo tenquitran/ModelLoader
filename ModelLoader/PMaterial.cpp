@@ -87,7 +87,11 @@ bool PMaterial::initialize(const std::string& texDiffusePath, GLuint programId)
         ATLASSERT(FALSE); return false;
     }
 
+    glUseProgram(programId);
+
     glUniform1i(m_texDiffuseSampler, 0);
+
+    glUseProgram(0);
 
     return true;
 }
