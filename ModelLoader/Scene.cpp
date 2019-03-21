@@ -72,13 +72,15 @@ void Scene::updateUniforms() const
     //     1) comment out the uniforms you don't need.
     //     2) correct the uniform locations if required.
 
+    glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(m_spCamera->getModelViewProjectionMatrix()));
+
+#if 0
     glm::mat4 modelView = m_spCamera->getModelViewMatrix();
 
     glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(modelView));
 
     glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_spCamera->getProjectionMatrix()));
 
-#if 0
     glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(m_spCamera->getModelViewProjectionMatrix()));
 
     glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_spCamera->getProjectionMatrix()));
